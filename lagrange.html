@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Lagrange interpolation">
+	<meta name="author" content="Arkadiusz Adamczyk">
+	<script src="fraction.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="katex.min.css">
+	<script src="katex.min.js"></script>
+</head>
+
+<body style="font-size:1.25vw; font-family:verdana;">
+	<div style="width:35vw;">
+		<table id="table">
+			<tr>
+				<th>
+					<p style="margin-left:2vw;">X:</p>
+				</th>
+				
+				<th>
+					<p style="margin-left:2vw;">Y:</p>
+				</th>
+			</tr>
+			
+			<tr>
+				<th>
+					<input type="number" id="knot0X" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
+				</th>
+				
+				<th>
+					<input type="number" id="knot0Y" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
+				</th>
+				
+				<th>
+					<p style="margin-left:1.5vw;">knot0</p>
+				</th>
+			</tr>
+			
+			<tr>
+				<th>
+					<input type="number" id="knot1X" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
+				</th>
+				
+				<th>
+					<input type="number" id="knot1Y" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
+				</th>
+				
+				<th>
+					<p style="margin-left:1.5vw;">knot1</p>
+				</th>
+			</tr>
+		</table>
+	</div>
+	<div style="margin-top:1vh;">
+		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw;" onclick="addknot()">Add knot</button> 
+		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw; margin-left:1vw;" onclick="removeknot()">Remove knot</button>
+		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw; margin-left:1vw;" onclick="calculate()">Calculate</button>		 
+
+	</div>
+	
+	<div id="alertdiv" style="margin-top:4vh;">
+		<p id="alert"></p>
+	</div>
+
+	<script>
+		let knotCount = 2;
+		
+		function addknot()
+		{
+  			let table = document.getElementById("table");
+			let newRow = table.insertRow();
+			
+			let newCellX = newRow.insertCell();
+			let newX = document.createElement("input");
+			newX.type = "number";
+			newX.setAttribute("id", "knot" + knotCount + "X"); 
+			newX.setAttribute("style", "width:3vw; height:3vh; margin-left:2vw; text-align:center;"); 
+			newCellX.appendChild(newX);
+			
+			let newCellY = newRow.insertCell();
+			let newY = document.createElement("input");
+			newY.type = "number";
+			newY.setAttribute("id", "knot" + knotCount + "Y");
+			newY.setAttribute("style", "width:3vw; height:3vh; margin-left:2vw; text-align:center;"); 
+			newCellY.appendChild(newY);
+			
+			let newCellP = newRow.insertCell();
+			let newP = document.createElement("p");
+			newP.innerHTML = "knot" + knotCount;
+			newP.setAttribute("style", "font-weight:bold; margin-left:1.5vw;"); 
+			newCellP.appendChild(newP);
+			
+			knotCount++;
+		}
+		
+		function removeknot() //removes last knot
+		{
+  			let table = document.getElementById("table");
+			if(knotCount>2)
+			{
+				table.deleteRow(knotCount);
+				knotCount--;
+			}
+		}
+		
+		function calculate() //calculates lagrange polynomial
+		{
+			let knotX = ""; //check X value of knot
+			let knotY = ""; //check Y value of knot
+			let knotQuantity = document.getElementById("table").rows.length; //number of fractions (polynomial's power)
+			knotQuantity--;
+			let xArray = []; //X values of all knots
+			let yArray = []; //Y values of all knots
+			let polynomialNumerator = []; //numerators of the whole calculated polynomial
+			let polynomialDenominator = []; //denominators of the whole calculated polynomial
+			
+			for(let i = 0; i < knotQuantity; i++)
+			{
+				knotX = document.getElementById("knot" + i + "X").value;
+				knotY = document.getElementById("knot" + i + "Y").value;
+				if (knotX == "" || knotY == "")
+				{
+					document.getElementById("alert").innerHTML="Wrong values in knots' cells.";
+					return 0;
+				}
+			}
+			
+			for(let i = 0; i < knotQuantity; i++)
+			{
+				knotX = document.getElementById("knot" + i + "X").value;
+				knotY = document.getElementById("knot" + i + "Y").value;
+
+				xArray[i] = knotX;
+				yArray[i] = knotY;
+			}
+			
+			function multCoefficients(num, result) {
+				let n = result.length;
+				let term = [1];  //term of x is always 1
+				term[n] = num * result[n-1]; //the last term has always the same equation
+				for (let i = 1; i < n; i++)
+					term[i] = result[i] + num * result[i - 1];
+				return term;
+			}
+
+			function calcCoefficients(num) {
+				let result = [1, num[0]];  //use result to accumulate values of coefficient to array
+				for (let j = 1; j < num.length; j++)
+					result = multCoefficients(num[j], result);
+				return result;
+			}			
+			
+			for(let i = 0; i < knotQuantity; i++)
+			{
+				let beingCalculated = xArray[i]; //knot being calculated
+				let xArrayTemp = Array.from(xArray); //copy array of x values
+				let count = 0; //checks if number of factors is correct
+				let numerator = []; //numerator of ith knot
+				let denominator = 1; //denominator of ith knot
+				let numerator_value = []; //calculated coefficients of the numerator
+				
+				for(let j = 0; j < knotQuantity; j++)
+				{					
+					if(j+1 == i)
+					{
+						j++;
+					}
+					
+					if(j+1 == xArray.length)
+					{
+						xArrayTemp[j+1] = xArray[0];
+					}
+					
+					numerator.push(-xArrayTemp[j+1]);
+					denominator = denominator * (beingCalculated - xArrayTemp[j+1]);
+					count++;
+					
+					if (count == knotQuantity - 1)
+					{
+						break;
+					}
+				}
+				
+				numerator_value = calcCoefficients(numerator);
+				
+				for(let j = 0; j < knotQuantity; j++)
+				{
+					numerator_value[j] = numerator_value[j] * yArray[i];
+				}
+			
+				polynomialNumerator.push(numerator_value);
+				polynomialDenominator.push(denominator);
+			}
+			
+			for(let i = 0; i < knotQuantity; i++)
+			{
+				for(let j = 0; j < knotQuantity; j++)
+				{
+					polynomialNumerator[j][i] = Fraction(polynomialNumerator[j][i], polynomialDenominator[j]).toFraction(excludeWhole=false);
+				}
+			}
+			
+			for(let i = 0; i < knotQuantity; i++)
+			{
+				for(let j = 1; j < knotQuantity; j++)
+				{
+					polynomialNumerator[0][i] = Fraction(polynomialNumerator[0][i]).add(polynomialNumerator[j][i]).toFraction(excludeWhole=false);
+				}
+			}		
+			
+			let polynomial = "L(x) = ";
+			for(let i = 0; i < knotQuantity; i++)
+			{
+
+				if (Fraction(polynomialNumerator[0][i]) != 0)
+				{
+					polynomial += Fraction(polynomialNumerator[0][i]).toLatex();
+				}	
+				
+				if(i < knotQuantity - 2 && Fraction(polynomialNumerator[0][i]) != 0)
+				{
+					polynomial += "x^" + (knotQuantity - 1 - i);
+				}
+				else if(i == knotQuantity - 2 && Fraction(polynomialNumerator[0][i]) != 0 && Fraction(polynomialNumerator[0][0]) != 0)
+				{
+					polynomial += "x";
+				}
+				
+				if(Fraction(polynomialNumerator[0][i+1]) > 0 && polynomial != "L(x) = ")
+				{
+					polynomial += "+";
+				}
+				else if(Fraction(polynomialNumerator[0][i+1]) < 0)
+				{
+					polynomial += "";
+				}
+
+			}
+					
+			katex.render(polynomial, alertdiv, { //render polynomial to look good
+			throwOnError: false
+			});
+		}		
+		
+	</script>
+</body>
+</html>
