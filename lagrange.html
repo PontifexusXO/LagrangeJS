@@ -15,8 +15,7 @@
 			<tr>
 				<th>
 					<p style="margin-left:2vw;">X:</p>
-				</th>
-				
+				</th>	
 				<th>
 					<p style="margin-left:2vw;">Y:</p>
 				</th>
@@ -25,12 +24,10 @@
 			<tr>
 				<th>
 					<input type="number" id="knot0X" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>
-				
+				</th>			
 				<th>
 					<input type="number" id="knot0Y" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>
-				
+				</th>			
 				<th>
 					<p style="margin-left:1.5vw;">knot0</p>
 				</th>
@@ -39,12 +36,10 @@
 			<tr>
 				<th>
 					<input type="number" id="knot1X" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>
-				
+				</th>				
 				<th>
 					<input type="number" id="knot1Y" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>
-				
+				</th>				
 				<th>
 					<p style="margin-left:1.5vw;">knot1</p>
 				</th>
@@ -52,13 +47,12 @@
 		</table>
 	</div>
 	<div style="margin-top:1vh;">
-		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw;" onclick="addknot()">Add knot</button> 
+		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw;" onclick="addknot()">Add knot</button>
 		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw; margin-left:1vw;" onclick="removeknot()">Remove knot</button>
-		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw; margin-left:1vw;" onclick="calculate()">Calculate</button>		 
-
+		 <button type="button" style="width:7.5vw; height:3vh; font-size:1vw; margin-left:1vw;" onclick="calculate()">Calculate</button>
 	</div>
 	
-	<div id="alertdiv" style="margin-top:4vh;">
+	<div id="alertdiv" style="margin-top:4vh; font-size:2vw;">
 		<p id="alert"></p>
 	</div>
 
@@ -234,7 +228,6 @@
 				{
 					polynomial += "";
 				}
-
 			}
 					
 			katex.render(polynomial, alertdiv, { //render polynomial to look good
