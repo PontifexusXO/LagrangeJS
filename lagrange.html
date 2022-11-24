@@ -24,10 +24,10 @@
 			<tr>
 				<th>
 					<input type="number" id="knot0X" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>			
+				</th>
 				<th>
 					<input type="number" id="knot0Y" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>			
+				</th>
 				<th>
 					<p style="margin-left:1.5vw;">knot0</p>
 				</th>
@@ -36,10 +36,10 @@
 			<tr>
 				<th>
 					<input type="number" id="knot1X" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>				
+				</th>
 				<th>
 					<input type="number" id="knot1Y" style="width:3vw; height:3vh; margin-left:2vw; text-align:center;">
-				</th>				
+				</th>
 				<th>
 					<p style="margin-left:1.5vw;">knot1</p>
 				</th>
@@ -67,21 +67,21 @@
 			let newCellX = newRow.insertCell();
 			let newX = document.createElement("input");
 			newX.type = "number";
-			newX.setAttribute("id", "knot" + knotCount + "X"); 
-			newX.setAttribute("style", "width:3vw; height:3vh; margin-left:2vw; text-align:center;"); 
+			newX.setAttribute("id", "knot" + knotCount + "X");
+			newX.setAttribute("style", "width:3vw; height:3vh; margin-left:2vw; text-align:center;");
 			newCellX.appendChild(newX);
 			
 			let newCellY = newRow.insertCell();
 			let newY = document.createElement("input");
 			newY.type = "number";
 			newY.setAttribute("id", "knot" + knotCount + "Y");
-			newY.setAttribute("style", "width:3vw; height:3vh; margin-left:2vw; text-align:center;"); 
+			newY.setAttribute("style", "width:3vw; height:3vh; margin-left:2vw; text-align:center;");
 			newCellY.appendChild(newY);
 			
 			let newCellP = newRow.insertCell();
 			let newP = document.createElement("p");
 			newP.innerHTML = "knot" + knotCount;
-			newP.setAttribute("style", "font-weight:bold; margin-left:1.5vw;"); 
+			newP.setAttribute("style", "font-weight:bold; margin-left:1.5vw;");
 			newCellP.appendChild(newP);
 			
 			knotCount++;
@@ -112,9 +112,28 @@
 			{
 				knotX = document.getElementById("knot" + i + "X").value;
 				knotY = document.getElementById("knot" + i + "Y").value;
-				if (knotX == "" || knotY == "")
+				if(knotX == "" || knotY == "")
 				{
-					document.getElementById("alert").innerHTML="Wrong values in knots' cells.";
+					document.getElementById("alertdiv").remove();
+					let newDiv = document.createElement("div");
+					let newP = document.createElement("p");
+					newP.innerHTML = "Wrong values in knots' cells. (empty cells/contains chars)";
+					newDiv.setAttribute("style", "margin-top:4vh; font-size:2vw;");
+					newDiv.setAttribute("id", "alertdiv");
+					document.getElementsByTagName("body")[0].appendChild(newDiv);
+					document.getElementById("alertdiv").appendChild(newP);
+					return 0;
+				}				
+				else if(Math.floor(knotX) != knotX || Math.floor(knotY) != knotY)
+				{
+					document.getElementById("alertdiv").remove();
+					let newDiv = document.createElement("div");
+					let newP = document.createElement("p");
+					newP.innerHTML = "Wrong values in knots' cells. (not an integer)";
+					newDiv.setAttribute("style", "margin-top:4vh; font-size:2vw;");
+					newDiv.setAttribute("id", "alertdiv");
+					document.getElementsByTagName("body")[0].appendChild(newDiv);
+					document.getElementById("alertdiv").appendChild(newP);
 					return 0;
 				}
 			}
@@ -132,14 +151,14 @@
 				let n = result.length;
 				let term = [1];  //term of x is always 1
 				term[n] = num * result[n-1]; //the last term has always the same equation
-				for (let i = 1; i < n; i++)
+				for(let i = 1; i < n; i++)
 					term[i] = result[i] + num * result[i - 1];
 				return term;
 			}
 
 			function calcCoefficients(num) {
 				let result = [1, num[0]];  //use result to accumulate values of coefficient to array
-				for (let j = 1; j < num.length; j++)
+				for(let j = 1; j < num.length; j++)
 					result = multCoefficients(num[j], result);
 				return result;
 			}			
@@ -169,7 +188,7 @@
 					denominator = denominator * (beingCalculated - xArrayTemp[j+1]);
 					count++;
 					
-					if (count == knotQuantity - 1)
+					if(count == knotQuantity - 1)
 					{
 						break;
 					}
