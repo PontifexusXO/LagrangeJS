@@ -117,7 +117,7 @@
 					document.getElementById("alertdiv").remove();
 					let newDiv = document.createElement("div");
 					let newP = document.createElement("p");
-					newP.innerHTML = "Wrong values in knots' cells. (empty cells/contains chars)";
+					newP.innerHTML = "Wrong values in knots' cells (empty cells/contains chars).";
 					newDiv.setAttribute("style", "margin-top:4vh; font-size:2vw;");
 					newDiv.setAttribute("id", "alertdiv");
 					document.getElementsByTagName("body")[0].appendChild(newDiv);
@@ -129,7 +129,7 @@
 					document.getElementById("alertdiv").remove();
 					let newDiv = document.createElement("div");
 					let newP = document.createElement("p");
-					newP.innerHTML = "Wrong values in knots' cells. (not an integer)";
+					newP.innerHTML = "Wrong values in knots' cells (not an integer).";
 					newDiv.setAttribute("style", "margin-top:4vh; font-size:2vw;");
 					newDiv.setAttribute("id", "alertdiv");
 					document.getElementsByTagName("body")[0].appendChild(newDiv);
@@ -142,7 +142,20 @@
 			{
 				knotX = document.getElementById("knot" + i + "X").value;
 				knotY = document.getElementById("knot" + i + "Y").value;
-
+				
+				if(xArray.includes(knotX, 0))
+				{
+					document.getElementById("alertdiv").remove();
+					let newDiv = document.createElement("div");
+					let newP = document.createElement("p");
+					newP.innerHTML = "Wrong values in knots' cells (repeated x value).";
+					newDiv.setAttribute("style", "margin-top:4vh; font-size:2vw;");
+					newDiv.setAttribute("id", "alertdiv");
+					document.getElementsByTagName("body")[0].appendChild(newDiv);
+					document.getElementById("alertdiv").appendChild(newP);
+					return 0;
+				}
+				
 				xArray[i] = knotX;
 				yArray[i] = knotY;
 			}
